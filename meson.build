@@ -462,6 +462,10 @@ funcs = '''
         explicit_bzero
         fmemopen
         fseeko
+        fsconfig
+        fsmount
+        fsopen
+        fspick
         fsync
         utimensat
         getdomainname
@@ -566,6 +570,9 @@ conf.set('HAVE_TM_GMTOFF', have ? 1 : false)
 
 have = cc.sizeof('struct mount_attr', prefix : '#include <linux/mount.h>') > 0
 conf.set('HAVE_STRUCT_MOUNT_ATTR', have ? 1 : false)
+
+have = cc.sizeof('enum fsconfig_command', prefix : '#include <linux/mount.h>') > 0
+conf.set('HAVE_ENUM_FSCONFIG_COMMANS', have ? 1 : false)
 
 have = cc.has_member('struct termios', 'c_line',
                      prefix : '#include <termios.h>')
