@@ -414,8 +414,7 @@ struct libmnt_context
 	struct list_head	hooksets_datas;	/* global hooksets data */
 	struct list_head	hooksets_hooks;	/* global hooksets data */
 
-	unsigned int	enabled_textdomain : 1,		/* bindtextdomain() called */
-			is_propagation_only : 1;
+	unsigned int	enabled_textdomain : 1;		/* bindtextdomain() called */
 };
 
 /* flags */
@@ -483,6 +482,8 @@ extern int mnt_optlist_register_map(struct libmnt_optlist *ls, const struct libm
 extern int mnt_optlist_remove_opt(struct libmnt_optlist *ls, struct libmnt_opt *opt);
 extern int mnt_optlist_remove_named(struct libmnt_optlist *ls, const char *name,
                              const struct libmnt_optmap *map);
+extern int mnt_optlist_remove_flags(struct libmnt_optlist *ls, unsigned long flags,
+                        const struct libmnt_optmap *map);
 extern int mnt_optlist_next_opt(struct libmnt_optlist *ls,
                         struct libmnt_iter *itr, struct libmnt_opt **opt);
 extern struct libmnt_opt *mnt_optlist_get_opt(struct libmnt_optlist *ls,
@@ -510,6 +511,7 @@ extern int mnt_optlist_get_optstr(struct libmnt_optlist *ol, const char **optstr
 extern int mnt_optlist_get_propagation(struct libmnt_optlist *ls);
 extern int mnt_optlist_is_propagation_only(struct libmnt_optlist *ls);
 extern int mnt_opt_has_value(struct libmnt_opt *opt);
+extern int mnt_opt_set_external(struct libmnt_opt *opt, int enable);
 extern int mnt_optlist_merge_opts(struct libmnt_optlist *ls);
 
 
