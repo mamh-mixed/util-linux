@@ -1170,7 +1170,7 @@ const char *mnt_context_get_options(struct libmnt_context *cxt)
 	if (!ls)
 		return NULL;
 
-	mnt_optlist_get_optstr(ls, &str, NULL);
+	mnt_optlist_get_optstr(ls, &str, NULL, 0);
 	return str;
 }
 
@@ -1702,7 +1702,7 @@ int mnt_context_get_mflags(struct libmnt_context *cxt, unsigned long *flags)
 		return -ENOMEM;
 
 	return mnt_optlist_get_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_LINUX_MAP));
+				mnt_get_builtin_optmap(MNT_LINUX_MAP), 0);
 }
 
 /**
@@ -1745,7 +1745,7 @@ int mnt_context_get_user_mflags(struct libmnt_context *cxt, unsigned long *flags
 		return -ENOMEM;
 
 	return mnt_optlist_get_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_USERSPACE_MAP));
+				mnt_get_builtin_optmap(MNT_USERSPACE_MAP), 0);
 }
 
 /**
