@@ -67,6 +67,9 @@ struct libmnt_context *mnt_new_context(void)
 	cxt->ns_tgt.fd = -1;
 	cxt->ns_cur = &cxt->ns_orig;
 
+	cxt->map_linux = mnt_get_builtin_optmap(MNT_LINUX_MAP);
+	cxt->map_userspace = mnt_get_builtin_optmap(MNT_USERSPACE_MAP);
+
 	INIT_LIST_HEAD(&cxt->hooksets_hooks);
 	INIT_LIST_HEAD(&cxt->hooksets_datas);
 
@@ -163,6 +166,9 @@ int mnt_reset_context(struct libmnt_context *cxt)
 	cxt->user_mountflags = 0;
 	cxt->mountdata = NULL;
 	cxt->flags = MNT_FL_DEFAULT;
+
+	cxt->map_linux = mnt_get_builtin_optmap(MNT_LINUX_MAP);
+	cxt->map_userspace = mnt_get_builtin_optmap(MNT_USERSPACE_MAP);
 
 	mnt_context_reset_status(cxt);
 	mnt_context_deinit_hooksets(cxt);
@@ -288,6 +294,9 @@ struct libmnt_context *mnt_copy_context(struct libmnt_context *o)
 
 	n->mountflags = o->mountflags;
 	n->mountdata = o->mountdata;
+
+	n->map_linux = o->map_linux;
+	n->map_userspace = o->map_userspace;
 
 	mnt_context_reset_status(n);
 
@@ -1099,11 +1108,9 @@ struct libmnt_optlist *mnt_context_get_optlist(struct libmnt_context *cxt)
 		cxt->optlist = mnt_new_optlist();
 		if (!cxt->optlist)
 			return NULL;
-		if (mnt_optlist_register_map(cxt->optlist,
-				mnt_get_builtin_optmap(MNT_LINUX_MAP)))
+		if (mnt_optlist_register_map(cxt->optlist, cxt->map_linux))
 			goto fail;
-		if (mnt_optlist_register_map(cxt->optlist,
-				mnt_get_builtin_optmap(MNT_USERSPACE_MAP)))
+		if (mnt_optlist_register_map(cxt->optlist, cxt->map_userspace))
 			goto fail;
 	}
 
@@ -1679,8 +1686,7 @@ int mnt_context_set_mflags(struct libmnt_context *cxt, unsigned long flags)
 	if (!ls)
 		return -ENOMEM;
 
-	return mnt_optlist_set_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_LINUX_MAP));
+	return mnt_optlist_set_flags(ls, flags, cxt->map_linux);
 }
 
 /**
@@ -1700,8 +1706,7 @@ int mnt_context_get_mflags(struct libmnt_context *cxt, unsigned long *flags)
 	if (!ls)
 		return -ENOMEM;
 
-	return mnt_optlist_get_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_LINUX_MAP), 0);
+	return mnt_optlist_get_flags(ls, flags, cxt->map_userspace, 0);
 }
 
 /**
@@ -1722,8 +1727,7 @@ int mnt_context_set_user_mflags(struct libmnt_context *cxt, unsigned long flags)
 	if (!ls)
 		return -ENOMEM;
 
-	return mnt_optlist_set_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_USERSPACE_MAP));
+	return mnt_optlist_set_flags(ls, flags, cxt->map_userspace);
 }
 
 /**
@@ -1743,8 +1747,7 @@ int mnt_context_get_user_mflags(struct libmnt_context *cxt, unsigned long *flags
 	if (!ls)
 		return -ENOMEM;
 
-	return mnt_optlist_get_flags(ls, flags,
-				mnt_get_builtin_optmap(MNT_USERSPACE_MAP), 0);
+	return mnt_optlist_get_flags(ls, flags, cxt->map_userspace, 0);
 }
 
 /**
