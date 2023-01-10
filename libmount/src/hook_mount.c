@@ -435,9 +435,15 @@ static int hook_attach_target(struct libmnt_context *cxt,
 	assert(api->fd_tree >= 0);
 
 	if (!rc) {
-		DBG(HOOK, ul_debugobj(hs, "move_mount(to=%s)", target));
+		unsigned int flgs = MOVE_MOUNT_F_EMPTY_PATH;
 
-		rc = move_mount(api->fd_tree, "", AT_FDCWD, target, MOVE_MOUNT_F_EMPTY_PATH);
+		if (cxt->optlist &&
+		    mnt_optlist_get_named(cxt->optlist, "sharing-group", cxt->map_linux))
+			flgs |= MOVE_MOUNT_SET_GROUP;
+
+		DBG(HOOK, ul_debugobj(hs, "move_mount(to=%s flags=0x%x)", target, flgs));
+
+		rc = move_mount(api->fd_tree, "", AT_FDCWD, target, flgs);
 		set_syscall_status(cxt, "move_mount", rc == 0);
 	}
 	return rc == 0 ? 0 : -errno;

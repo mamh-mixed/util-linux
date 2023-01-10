@@ -139,6 +139,7 @@ static const struct libmnt_optmap linux_flags_map[] =
 #ifdef MS_MOVE
    { "move",	MS_MOVE,	MNT_NOHLPS | MNT_NOMTAB | MNT_NOFSTAB }, /* --move */
 #endif
+   { "sharing-group", 0, MNT_NOHLPS | MNT_NOMTAB },	/* MOVE_MOUNT_SET_GROUP */
    { NULL, 0, 0 }
 };
 
